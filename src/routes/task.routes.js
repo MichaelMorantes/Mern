@@ -1,15 +1,25 @@
 import { Router } from "express";
-import { authRequired } from "../middlewares/validate.token.js";
-import { getTasks, getTask, createTask, updateTask, deleteTask } from "../controllers/task.controller.js"
-import { validateSchema } from "../middlewares/validator.zod.js";
-import { createTaskSchema } from "../schemas/task.schema.js"
+import {
+    createTask,
+    deleteTask,
+    getTask,
+    getTasks,
+    updateTask,
+} from "../controllers/task.controller.js";
+import { auth } from "../middlewares/auth.middleware.js";
+import { validateSchema } from "../middlewares/validator.middleware.js";
+import { createTaskSchema } from "../schemas/task.schema.js";
 
-const router = Router()
+const router = Router();
 
-router.get('/task', authRequired, getTasks)
-router.get('/task/:id', authRequired, getTask)
-router.post('/task', validateSchema(createTaskSchema), authRequired, createTask)
-router.put('/task/:id', authRequired, updateTask)
-router.delete('/task/:id', authRequired, deleteTask)
+router.get("/tasks", auth, getTasks);
 
-export default router
+router.post("/tasks", auth, validateSchema(createTaskSchema), createTask);
+
+router.get("/tasks/:id", auth, getTask);
+
+router.put("/tasks/:id", auth, updateTask);
+
+router.delete("/tasks/:id", auth, deleteTask);
+
+export default router;
